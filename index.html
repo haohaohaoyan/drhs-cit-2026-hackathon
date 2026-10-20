@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>dictionary type shi</title>
+    </head>
+    <body>
+        <style>
+            #topbar {
+                background-color: rgb(4, 86, 249);
+                height: 2em;
+                width: 100vw;
+                position: absolute;
+                top: 0;
+                left: 0;
+                padding: 1em;
+                z-index: 999999;
+            }
+            
+            #book {
+                display: grid;
+                width: 90%;
+                height: 90vh;
+                background-color: brown;
+                grid-template-columns: 10% 40% 40% 10%;
+                grid-template-rows: 10% 80% 10%;
+                margin: auto;
+            }
+
+            .page {
+                padding: 2em;
+                display: flex;
+                flex-direction: column;
+                width: stretch;
+                height: stretch;
+                background-color: beige;
+                border-color: black;
+                border-width: 4px;
+                border-style: solid;
+                padding: 2em;
+                grid-row: 2 / 2;
+            }
+
+            .left {
+                grid-column: 2 / 2;
+            }
+
+            .right {
+                grid-column: 3 / 3;
+            }
+
+            .flipper {
+                position: absolute;
+                width: 2em;
+                height: 100%;
+                background-color: #1a1b4b;
+                color: white;
+                font-weight: bold;
+            }
+
+            #leftFlipper {
+                left: 0;
+            }
+
+            #rightFlipper {
+                right: 0;
+            }
+
+            .page .word {
+                font-size: 3em;
+                font-weight: bold;
+                margin-bottom: 0;
+            }
+
+            .page .pageNumber {
+                align-self: bottom;
+            }
+        </style>
+        <!-- top bar with settings, language select -->
+        <div id="topbar">
+            <input id="createWord" type="text" placeholder="New word">
+            <input id="englishEquivalent" type="text" placeholder="English Equivalent">
+            <input id="definition" type="text" placeholder="Definition">
+            <button id="addWord">Add Word</button>
+        </div>
+        <!-- actual book ui and stuff -->
+        <div id="book">
+            <div id="leftPage" class="page left">
+                <h1 class="word"></h1>
+                <h1 class="translated"></h1>
+                <p class="description"></p>
+                <p class="pageNumber"></p>
+            </div>
+            <div id="rightPage" class="page right">
+                <h1 class="word"></h1>
+                <h1 class="translated"></h1>
+                <p class="description"></p>
+                <p class="pageNumber"></p>
+            </div>
+            <button id="leftFlipper" class="flipper left">&lt;</button>
+            <button id="rightFlipper" class="flipper right">&gt;</button>
+        </div>
+        <script>
+            const pages = ["a","a","a","a","a","a","a","a","a","a","a","a","a","a","a","a","a","a","a","a","a","a","a","a","a","a","a","a","a","a","a","a","a","a","a","a"];
+
+            let pagenum = 0;
+            let index = localStorage.getItem("index") || 1;
+
+            const leftPage = document.querySelector("#leftPage");
+            const rightPage = document.querySelector("#rightPage");
+
+            function renderPages() {
+                console.log(pagenum + 1)
+                let leftWord = JSON.parse(localStorage.getItem(pagenum + 1)) || {newWord: "No Word", englishEquivalent: "No English Equivalent", definition: "No Definition"};
+                let rightWord = JSON.parse(localStorage.getItem(pagenum + 2)) || {newWord: "No Word", englishEquivalent: "No English Equivalent", definition: "No Definition"};
+                console.log(leftPage)
+                console.log(leftWord, rightWord);
+                leftPage.querySelector(".word").innerText = leftWord.newWord;
+                leftPage.querySelector(".translated").innerText = `Language: ${leftWord.englishEquivalent}`;
+                leftPage.querySelector(".description").innerText = `Definition: ${leftWord.definition}`;
+                rightPage.querySelector(".word").innerText = rightWord.newWord;
+                rightPage.querySelector(".translated").innerText = `Language: ${rightWord.englishEquivalent}`;
+                rightPage.querySelector(".description").innerText = `Definition: ${rightWord.definition}`;
+            };
+
+            document.querySelector("#leftFlipper").addEventListener("click", () => {
+                if (pagenum > 1) {
+                    pagenum -= 2;
+                    renderPages();
+                }
+            });
+
+            document.querySelector("#rightFlipper").addEventListener("click", () => {
+                if (pagenum + 2 < pages.length) {
+                    pagenum += 2;
+                    renderPages();
+                }
+            });
+
+            document.querySelector("#addWord").addEventListener("click", () => {
+                const newWord = document.querySelector("#createWord").value;
+                const englishEquivalent = document.querySelector("#englishEquivalent").value;
+                console.log(englishEquivalent)
+                const definition = document.querySelector("#definition").value;
+
+                if (newWord && englishEquivalent && definition) {
+                    localStorage.setItem(index, JSON.stringify({newWord, englishEquivalent, definition}));
+                    localStorage.getItem("index", index + 1)
+                    index += 1;
+                    renderPages();
+                }
+            });
+
+            // example one
+            localStorage.setItem(1, JSON.stringify({'newWord': 'Apple', 'englishEquivalent': 'manzana', 'definition': 'A fruit that is red or green'}));
+            
+            localStorage.setItem(2, JSON.stringify({'newWord': 'School', 'englishEquivalent': 'escuela', 'definition': 'A place students go to learn'}));
+
+            localStorage.setItem(3, JSON.stringify({'newWord': 'Book', 'englishEquivalent': 'libro', 'definition': 'Collection of related papers'}));
+
+            localStorage.setItem(4, JSON.stringify({'newWord': 'Phone', 'englishEquivalent': 'telefono', 'definition': 'A celluar device able to call people remotely'}));
+            
+            localStorage.setItem(5, JSON.stringify({'newWord': 'Drone', 'englishEquivalent': 'Drone', 'definition': 'A flying device that can be controlled remotely'}));
+            
+            localStorage.setItem(6, JSON.stringify({'newWord': 'CIT', 'englishEquivalent': 'CIT', 'definition': 'Center for Information Technology at Deep Run High School'}));
+            
+            localStorage.setItem(7, JSON.stringify({'newWord': 'Abhaya', 'englishEquivalent': 'Abayita', 'definition': 'absolte chud'}));
+
+            localStorage.setItem(8, JSON.stringify({'newWord': 'Smart', 'englishEquivalent': 'intelegente', 'definition': 'An adjective that describes someone with a high IQ or someone who is very clever'}));
+
+            localStorage.setItem(9, JSON.stringify({'newWord': 'Runner', 'englishEquivalent': 'el corredor', 'definition': 'A person who runs'}));
+
+            localStorage.setItem(10, JSON.stringify({'newWord': 'Teacher', 'englishEquivalent': 'profesora', 'definition': 'A person who teaches'}));
+            
+            localStorage.setItem(11, JSON.stringify({'newWord': 'Banana', 'englishEquivalent': 'Platano', 'definition': 'A tropical fruit that is long and yellow'}));
+
+            localStorage.getItem("index", index + 11)
+            index += 11;
+            
+            renderPages();
+        </script> 
+    </body>
+</html>
+
+
